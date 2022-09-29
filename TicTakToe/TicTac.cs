@@ -3,41 +3,49 @@
     public class TicTac
     {
         #region Fileds
-        private string[,] points = new string[3, 3]
-        {
-            {" ", " ", " " },
-            {" ", " ", " " },
-            {" ", " ", " " },
-        };
+        private string[] points, examplePoints;
 
-        string[] coordinatesString;
-        string warningMessage = "Ошибка ввода! Введите координаты столбца и строки должны быть в пределах [0..2]";
-        string wrongMoveMessage = "По этим координатам ход уже был сделан!";
+        string filedNumString;
+        string warningMessage = "Ну кто так ходит D: \n Выбери номер поля из диапазона [1..9]";
+        string wrongMoveMessage = "Кабинка занята!";
         bool isFirstPlayer = true;
+        bool isGameOver;
+        string[] winTextLines =
+        {
+            "GG WP", "Ты молодец!=)", "Тебе бы в битву экстрасенсов :D", "Славная победа добывается потом и кровью.", "Я не устал. А ты?", "Никак вы, ?№*^, не научитесь!"
+        };
         #endregion
 
         public TicTac()
         {
-            coordinatesString = new string[] {" ", " "}; 
+            filedNumString = ""; 
         }
 
         public void StartGame()
         {
-            int row, col;            
+            isGameOver = false;
+            points = new string[9] { " ", " ", " ", " ", " ", " ", " ", " ", " " };
+            examplePoints = new string[9] { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+            int fieldNum;            
             do
             {
                 Render();
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Введите координаты поля через пробел: ");
-                coordinatesString = Console.ReadLine().Split(" ");
-                if (coordinatesString.Length < 2 || !int.TryParse(coordinatesString[0], out row) || !int.TryParse(coordinatesString[1], out col))
+                
+                if(isFirstPlayer)
+                    Console.WriteLine("Ход Х: ");
+                else
+                    Console.WriteLine("Ход O: ");
+
+                filedNumString = Console.ReadLine();
+                if (!int.TryParse(filedNumString, out fieldNum))
                 {
-                    ShowWarning(warningMessage);
+                    ShowMessage(warningMessage);
                     continue;
                 }
-                UpdateValues(row, col);
+                UpdateValues(fieldNum);
             }
-            while (!IsGameOver());
+            while (!isGameOver);
         }
 
         #region Methods
@@ -52,50 +60,81 @@
             DrawField();
         }
 
-        private void UpdateValues(int row, int col)
+        private void UpdateValues(int fieldNum)
         {
-            if (row > 2 || row < 0 || col > 2 || col < 0)
+            if (fieldNum > 9 || fieldNum < 1)
             {
-                ShowWarning(warningMessage);
+                ShowMessage(warningMessage);
             } else
             {
-                if (points[row, col] == " ")
+                if (points[fieldNum-1] != "X" && points[fieldNum - 1] != "O")
                 {
-                    points[row, col] = isFirstPlayer ? "X" : "O";
+                    points[fieldNum-1] = isFirstPlayer ? "X" : "O";
                     isFirstPlayer = !isFirstPlayer;
 
-                    // TODO: Add CheckForWinner() method
-
+                    if(IsGameOver("X"))
+                    {
+                        Render();
+                        Random rand = new Random();
+                        ShowMessage("Победитель - Х", rand.Next(winTextLines.Length), ConsoleColor.Green);
+                        isGameOver = true;
+                    } else if(IsGameOver("O"))
+                    {
+                        Render();
+                        Random rand = new Random();
+                        ShowMessage("Победитель - Y", rand.Next(winTextLines.Length), ConsoleColor.Blue);
+                        isGameOver = true;
+                    }                    
                 }
                 else
                 {
-                    ShowWarning(wrongMoveMessage);
+                    ShowMessage(wrongMoveMessage);
                 }
             }
         }
 
         private void DrawField()
         {
-            Console.WriteLine($" {points[0, 0]} | {points[0, 1]} | {points[0, 2]} ");
-            Console.WriteLine("---|---|---");
-            Console.WriteLine($" {points[1, 0]} | {points[1, 1]} | {points[1, 2]} ");
-            Console.WriteLine("---|---|---");
-            Console.WriteLine($" {points[2, 0]} | {points[2, 1]} | {points[2, 2]} ");
+            Console.WriteLine("Здесь играть     Номера полей");
+            Console.WriteLine($" {points[0]} | {points[1]} | {points[2]}        {examplePoints[0]} | {examplePoints[1]} | {examplePoints[2]}");
+            Console.WriteLine("---|---|---      ---|---|---");
+            Console.WriteLine($" {points[3]} | {points[4]} | {points[5]}        {examplePoints[3]} | {examplePoints[4]} | {examplePoints[5]}");
+            Console.WriteLine("---|---|---      ---|---|---");
+            Console.WriteLine($" {points[6]} | {points[7]} | {points[8]}        {examplePoints[6]} | {examplePoints[7]} | {examplePoints[8]}");
         }
 
-        private bool IsGameOver()
+        private bool IsGameOver(string playerSign)
         {
-            return false;
+            return (
+                (points[0] == playerSign && points[1] == playerSign && points[2] == playerSign) ||
+                (points[3] == playerSign && points[4] == playerSign && points[5] == playerSign) ||
+                (points[6] == playerSign && points[8] == playerSign && points[9] == playerSign) ||
+                
+                (points[0] == playerSign && points[3] == playerSign && points[6] == playerSign) ||
+                (points[1] == playerSign && points[4] == playerSign && points[7] == playerSign) ||
+                (points[2] == playerSign && points[5] == playerSign && points[8] == playerSign) ||
+                
+                (points[0] == playerSign && points[4] == playerSign && points[8] == playerSign) ||
+                (points[2] == playerSign && points[4] == playerSign && points[6] == playerSign)
+            );
         }
 
-        static void ShowWarning(string message)
+        private void ShowMessage(string message, ConsoleColor color = ConsoleColor.Red)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = color;
             Console.WriteLine("\n " + message);
             Console.WriteLine(" Нажмите любую клавишу");
             Console.ReadKey();
         }
 
+        private void ShowMessage(string message, int index, ConsoleColor color = ConsoleColor.Red)
+        {
+            Console.ForegroundColor = color;
+            Console.WriteLine("\n " + message);
+            Console.WriteLine(winTextLines[index]);
+            Console.WriteLine(" Нажмите любую клавишу");
+            Console.ReadKey();
+        }
         #endregion
     }
 }
