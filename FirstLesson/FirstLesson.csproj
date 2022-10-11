@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TicTakToe\TicTacToe.csproj" />
+    <ProjectReference Include="..\CsharpPhonebook\CsharpPhonebook.csproj" />
   </ItemGroup>
 
 </Project>
