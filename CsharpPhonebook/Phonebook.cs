@@ -49,6 +49,8 @@ namespace CsharpPhonebook
                 string? line;
                 while ((line = await reader.ReadLineAsync()) != null)
                 {
+                    if (line == null || line == String.Empty)
+                        return contacts;
                     var contactData = line.Split(":");
                     contacts.Add(new Contact(
                         contactData[0],
@@ -59,28 +61,29 @@ namespace CsharpPhonebook
             return contacts;
         }
 
-        public async void UpdateContact(int id, Contact contact)
+        public async Task UpdateContact(int id, Contact contact)
         {
             var contacts = await ReadContactAsync();
             contacts[id] = contact;
-            RewriteFile(contacts);
+            await RewriteFile(contacts);
         }
 
-        public async void DeleteContact(Contact contact)
+        public async Task DeleteContact(int contactId)
         {
             var contacts = await ReadContactAsync();
-            contacts.Remove(contact);
-            RewriteFile(contacts);
+            contacts.RemoveAt(contactId);
+            await RewriteFile(contacts);
         }
         #endregion
 
-        private async void RewriteFile(List<Contact> contacts)
+        private async Task RewriteFile(List<Contact> contacts)
         {
-            using (StreamWriter sw = new StreamWriter(filepath, true))
+            using (StreamWriter sw = new StreamWriter(filepath, false))
             {
                 foreach (var c in contacts)
                 {
                     await sw.WriteLineAsync($"{c}");
+
                 }
             }
         }
