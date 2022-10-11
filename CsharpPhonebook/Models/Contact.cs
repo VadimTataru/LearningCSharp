@@ -1,6 +1,9 @@
 ﻿using System;
 namespace CsharpPhonebook.Models
 {
+    /// <summary>
+    /// Модель контактов
+    /// </summary>
     public class Contact
     {
         public string name;

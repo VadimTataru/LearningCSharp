@@ -4,10 +4,16 @@ using CsharpPhonebook.Models;
 
 namespace CsharpPhonebook
 {
+    /// <summary>
+    /// Главный класс
+    /// </summary>
     public class Phonebook
     {
         private const string filepath = "phonebook.txt";
 
+        /// <summary>
+        /// Синглтон
+        /// </summary>
         #region singleton
         private static Phonebook? instance;
 
@@ -27,6 +33,11 @@ namespace CsharpPhonebook
         #endregion
 
         #region CRUD
+        /// <summary>
+        /// Ассинхронный метод записи нового контакта
+        /// </summary>
+        /// <param name="contact">На вход подаётся модель Contact</param>
+        /// <returns>True - контакт записан, False - контакт не записан</returns>
         public async Task<bool> CreateContactAsync(Contact contact)
         {
             var contacts = await ReadContactAsync();
@@ -41,6 +52,10 @@ namespace CsharpPhonebook
             return true;
         }
 
+        /// <summary>
+        /// Ассинхронное получение контактов из файла
+        /// </summary>
+        /// <returns>Коллекция контактов</returns>
         public async Task<List<Contact>> ReadContactAsync()
         {
             var contacts = new List<Contact>();
@@ -61,6 +76,12 @@ namespace CsharpPhonebook
             return contacts;
         }
 
+        /// <summary>
+        /// Ассинхронный метод изменения контакта
+        /// </summary>
+        /// <param name="id">Идентификатор контакта</param>
+        /// <param name="contact">Заменяющие данные контакта</param>
+        /// <returns>Nothing</returns>
         public async Task UpdateContact(int id, Contact contact)
         {
             var contacts = await ReadContactAsync();
@@ -68,6 +89,11 @@ namespace CsharpPhonebook
             await RewriteFile(contacts);
         }
 
+        /// <summary>
+        /// Удаляет контакт по идентификатору
+        /// </summary>
+        /// <param name="contactId">Идентификатор контакта</param>
+        /// <returns>Another one (nothing)</returns>
         public async Task DeleteContact(int contactId)
         {
             var contacts = await ReadContactAsync();
@@ -76,6 +102,11 @@ namespace CsharpPhonebook
         }
         #endregion
 
+        /// <summary>
+        /// Вспомогательный метод перезаписи всех контактов
+        /// </summary>
+        /// <param name="contacts">Список контактов</param>
+        /// <returns>And another one (nothing)</returns>
         private async Task RewriteFile(List<Contact> contacts)
         {
             using (StreamWriter sw = new StreamWriter(filepath, false))

@@ -7,10 +7,12 @@
 
         string filedNumString;
         string warningMessage = "Ну кто так ходит D: \n Выбери номер поля из диапазона [1..9]";
+        //поле занято, перебрось кубик
         string wrongMoveMessage = "Кабинка занята!";
         string[,] outputField;
         bool isFirstPlayer = true;
         bool isGameOver;
+        //пасхалочки
         string[] winTextLines =
         {
             "GG WP", "Ты молодец!=)", 
@@ -44,6 +46,9 @@
         }
 
         #region Methods
+        /// <summary>
+        /// Стартуем игру
+        /// </summary>
         public void StartGame()
         {
             isGameOver = false;            
@@ -70,6 +75,9 @@
             while (!isGameOver);
         }        
 
+        /// <summary>
+        /// Отрисовка всего что можно
+        /// </summary>
         private void Render()
         {
             Console.Clear();            
@@ -84,6 +92,11 @@
                 Draw();
         }
 
+        /// <summary>
+        /// Обновляем значения полей
+        /// </summary>
+        /// <param name="fieldNum">Номер поля, куда был сделан ход</param>
+        /// <returns>Удалось ли сходить</returns>
         private bool UpdateValues(int fieldNum)
         {
             if (fieldNum > 9 || fieldNum < 1)
@@ -116,6 +129,10 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Метод, определяющий победителя
+        /// </summary>
         private void CheckForWinner()
         {
             if (IsGameOver("X", out winCombo))
@@ -139,6 +156,9 @@
             }
         }
 
+        /// <summary>
+        /// Поле с обозначениями клеток
+        /// </summary>
         private void DrawTrainingField()
         {
             Console.WriteLine("Номера полей");
@@ -150,7 +170,9 @@
             Console.WriteLine();
         }
 
-
+        /// <summary>
+        /// Рисуем после каждого хода
+        /// </summary>
         private void Draw()
         {
             var indecesX = GetIndex(lastX);
@@ -185,6 +207,11 @@
             }
         }
 
+        /// <summary>
+        /// Рисуем, когда кто-то выиграл
+        /// </summary>
+        /// <param name="winCombo">Победная комбинация (Тройной tuple)</param>
+        /// <param name="isXWin">Победил Х?</param>
         private void Draw((int, int, int) winCombo, bool isXWin)
         {
             var indeces1 = GetIndex(winCombo.Item1+1);
@@ -220,6 +247,11 @@
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="num"></param>
+        /// <returns></returns>
         private (int, int) GetIndex(int num)
         {
             switch(num)
@@ -240,9 +272,15 @@
             }
         }
 
+        /// <summary>
+        /// Проверка факта окончания игры
+        /// </summary>
+        /// <param name="playerSign">Символ игрока</param>
+        /// <param name="comb">Комбинация для проверки факта окончания игры</param>
+        /// <returns>Игра окончена?</returns>
         private bool IsGameOver(string playerSign, out (int, int, int)? comb)
         {
-            //rows
+            //строки
             if(points[0] == playerSign && points[1] == playerSign && points[2] == playerSign)
             {
                 comb = (0, 1, 2);
@@ -258,7 +296,7 @@
                 comb = (6, 7, 8);
                 return true;
             }
-            //columns
+            //колонны
             if (points[0] == playerSign && points[3] == playerSign && points[6] == playerSign)
             {
                 comb = (0, 3, 6);
@@ -274,7 +312,7 @@
                 comb = (2, 5, 8);
                 return true;
             }
-            //diagonals
+            //диагонали
             if (points[0] == playerSign && points[4] == playerSign && points[8] == playerSign)
             {
                 comb = (0, 4, 8);
@@ -290,6 +328,11 @@
             return false;
         }
 
+        /// <summary>
+        /// Вывод сообщения
+        /// </summary>
+        /// <param name="message">Сообщение</param>
+        /// <param name="color">Текст сообщения</param>
         private void ShowMessage(string message, ConsoleColor color = ConsoleColor.Red)
         {
             Console.ForegroundColor = color;
@@ -299,6 +342,12 @@
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        /// <summary>
+        /// Вывод сообщения
+        /// </summary>
+        /// <param name="message">Сообщение</param>
+        /// <param name="index">Индекс доп. сообщения</param>
+        /// <param name="color">Цвет текста</param>
         private void ShowMessage(string message, int index, ConsoleColor color = ConsoleColor.Red)
         {
             Console.ForegroundColor = color;
@@ -306,22 +355,6 @@
             Console.WriteLine(winTextLines[index]);
             Console.WriteLine(" Нажмите любую клавишу");
             Console.ReadKey();
-        }
-
-        private void AIMove()
-        {
-            int moveTo = 5;
-            if(UpdateValues(moveTo))
-            {
-
-            } else
-            {
-                while(!UpdateValues(moveTo))
-                {
-                    Random rand = new Random();
-                    moveTo = rand.Next(9);
-                }          
-            }
         }
         #endregion
     }
