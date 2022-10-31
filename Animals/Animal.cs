@@ -7,8 +7,15 @@
 
         protected Animal(int age, TypeOfFood type = TypeOfFood.Else)
         {
-            this.Age = age;
-            this.Type = type;
+            if (age < 0)
+            {
+                throw new AgeException("Возраст не может быть отрицательным!");
+            }
+            else
+            {
+                this.Age = age;
+                this.Type = type;
+            }
         }
 
         public abstract string About();

@@ -160,21 +160,33 @@ while(true)
 
         case 3:
             {
-                Koala k = new Koala("Piter", 8);
+                Koala? k = null;
+                try
+                {
+                    k = new Koala("Piter", -1);
+                } catch (AgeException e)
+                {
+                    Console.WriteLine(e.message);
+                }
+                
                 Owl o = new Owl("Chris", 3);
                 Worm w = new Worm("Patrick", 1);
 
-                Console.WriteLine("Коала");
-                Console.WriteLine(k.About());
-                k.Eat();
-                k.Move();
-
-                Console.WriteLine("Сова");
+                
+                if(k != null)
+                {
+                    Console.WriteLine("Коала");
+                    Console.WriteLine(k.About());
+                    k.Eat();
+                    k.Move();
+                }
+                
+                Console.WriteLine("\n Сова");
                 Console.WriteLine(o.About());
                 o.Eat();
                 o.Move();
 
-                Console.WriteLine("Червь");
+                Console.WriteLine("\n Червь");
                 Console.WriteLine(w.About());
                 w.Eat();
                 w.Move();
