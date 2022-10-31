@@ -1,4 +1,5 @@
-﻿using CsharpPhonebook;
+﻿using Animals;
+using CsharpPhonebook;
 using CsharpPhonebook.Models;
 using TicTacToe;
 
@@ -7,6 +8,7 @@ while(true)
     Console.Clear();
     Console.WriteLine("1. Tic-tac-toe");
     Console.WriteLine("2. Phonebook");
+    Console.WriteLine("3. Animals");
     Console.WriteLine("0. Не нажимать");
 
     int command;
@@ -154,6 +156,30 @@ while(true)
 
                 }
                 break;
+            }
+
+        case 3:
+            {
+                Koala k = new Koala("Piter", 8);
+                Owl o = new Owl("Chris", 3);
+                Worm w = new Worm("Patrick", 1);
+
+                Console.WriteLine("Коала");
+                Console.WriteLine(k.About());
+                k.Eat();
+                k.Move();
+
+                Console.WriteLine("Сова");
+                Console.WriteLine(o.About());
+                o.Eat();
+                o.Move();
+
+                Console.WriteLine("Червь");
+                Console.WriteLine(w.About());
+                w.Eat();
+                w.Move();
+
+                return;
             }
 
         case 0:

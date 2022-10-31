@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Animals\Animals.csproj" />
     <ProjectReference Include="..\TicTakToe\TicTacToe.csproj" />
     <ProjectReference Include="..\CsharpPhonebook\CsharpPhonebook.csproj" />
   </ItemGroup>
