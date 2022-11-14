@@ -169,11 +169,11 @@ while(true)
                 try
                 {
                     k = new Koala("Piter", -1);
-                } catch (AgeException e)
+                }
+                 catch(AgeException e)
                 {
                     Console.WriteLine(e.message);
-                }
-                
+                } 
                 Owl o = new Owl("Chris", 3);
                 Worm w = new Worm("Patrick", 1);
 

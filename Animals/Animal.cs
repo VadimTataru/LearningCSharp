@@ -2,20 +2,31 @@
 {
     public abstract class Animal
     {
-        protected int Age { get; set; }
+        protected int Age {
+            get
+            {
+                return age;
+            }
+            set
+            {
+                
+                if (value < 0)
+                {
+                    throw new AgeException("Возраст не может быть отрицательным!");
+                }
+                else
+                    age = value;               
+            } 
+        }
+
         protected TypeOfFood Type { get; set; }
+
+        protected int age;
 
         protected Animal(int age, TypeOfFood type = TypeOfFood.Else)
         {
-            if (age < 0)
-            {
-                throw new AgeException("Возраст не может быть отрицательным!");
-            }
-            else
-            {
-                this.Age = age;
-                this.Type = type;
-            }
+            this.Age = age;
+            this.Type = type;
         }
 
         public abstract string About();
@@ -26,15 +37,7 @@
 
         public override string ToString()
         {
-            string type;
-            if (Type == TypeOfFood.Herb)
-                type = "Herbivore";
-            else if (Type == TypeOfFood.Predator)
-                type = "Predator";
-            else
-                type = "Else";
-
-            return $"Age: {Age}, Type: {type}";
+            return $"Age: {age}, Type: {nameof(Type)}";
         }
     }
 }
