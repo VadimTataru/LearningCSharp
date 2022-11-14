@@ -32,6 +32,7 @@ while(true)
             {
                 var isRunning = true;
                 var phonebook = Phonebook.GetInstance();
+                phonebook.OnDataChange += DisplayDataChange;
                 while (isRunning)
                 {
                     Console.Clear();
@@ -138,9 +139,13 @@ while(true)
                                 {
                                     Console.WriteLine("Ввод не корректен");
                                     continue;
+                                } else if (id > contactList.Count || id <= 0)
+                                {
+                                    Console.WriteLine("Ввод не корректен");
+                                    continue;
                                 }
 
-                                await phonebook.DeleteContact(id - 1);
+                                await phonebook.DeleteContact((id-1));
                                 Console.WriteLine("Нажмите любую кнопку, чтобы выйти в меню");
                                 Console.ReadKey();
                                 break;
@@ -199,4 +204,11 @@ while(true)
                 return;
             }
     }
+}
+
+void DisplayDataChange(string message, ConsoleColor consoleColor)
+{
+    Console.ForegroundColor = consoleColor;
+    Console.WriteLine(message);
+    Console.ResetColor();
 }

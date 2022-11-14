@@ -11,10 +11,14 @@ namespace CsharpPhonebook
     {
         private const string filepath = "phonebook.txt";
 
+        #region Events
+        public Action<string, ConsoleColor> OnDataChange;
+        #endregion
+
+        #region Singleton
         /// <summary>
         /// Синглтон
         /// </summary>
-        #region singleton
         private static Phonebook? instance;
 
         private Phonebook()
@@ -40,6 +44,8 @@ namespace CsharpPhonebook
         /// <returns>True - контакт записан, False - контакт не записан</returns>
         public async Task<bool> CreateContactAsync(Contact contact)
         {
+            if (!File.Exists(filepath))
+                File.Create(filepath);
             var contacts = await ReadContactAsync();
 
             if (contacts.Contains(contact))
@@ -48,6 +54,8 @@ namespace CsharpPhonebook
             using (StreamWriter sw = new StreamWriter(filepath, true))
             {
                 await sw.WriteLineAsync($"{contact}");
+                if (OnDataChange != null)
+                    OnDataChange(contact.name, ConsoleColor.Green);
             }
             return true;
         }
@@ -58,6 +66,8 @@ namespace CsharpPhonebook
         /// <returns>Коллекция контактов</returns>
         public async Task<List<Contact>> ReadContactAsync()
         {
+            if (!File.Exists(filepath))
+                File.Create(filepath);
             var contacts = new List<Contact>();
             using (StreamReader reader = new StreamReader(filepath))
             {
@@ -87,6 +97,8 @@ namespace CsharpPhonebook
             var contacts = await ReadContactAsync();
             contacts[id] = contact;
             await RewriteFile(contacts);
+            if (OnDataChange != null)
+                OnDataChange(contacts[id].name, ConsoleColor.Yellow);
         }
 
         /// <summary>
@@ -97,8 +109,11 @@ namespace CsharpPhonebook
         public async Task DeleteContact(int contactId)
         {
             var contacts = await ReadContactAsync();
-            contacts.RemoveAt(contactId);
+            var contactToRemove = contacts[contactId];
+            contacts.Remove(contactToRemove);
             await RewriteFile(contacts);
+            if(OnDataChange != null)
+                OnDataChange(contactToRemove.name, ConsoleColor.Red);
         }
         #endregion
 
